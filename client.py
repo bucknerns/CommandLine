@@ -25,8 +25,11 @@ atexit.register(cleanup)
 
 def read_pipe(pipe, fp_out):
     def target():
-        for line in iter(pipe.readline, b""):
-            fp_out.write(line)
+        try:
+            for line in iter(pipe.readline, b""):
+                fp_out.write(line)
+        finally:
+            pipe.close()
     thread = threading.Thread(target=target)
     thread.daemon = True
     thread.start()
